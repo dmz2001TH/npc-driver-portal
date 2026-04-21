@@ -1,0 +1,5 @@
+node_modules/
+data/drivers.db
+data/richmenu.png
+.env
+*.log

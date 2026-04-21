@@ -1,0 +1,28 @@
+{
+  "name": "npc-driver-portal",
+  "version": "1.0.0",
+  "description": "LINE Bot for NPC truck drivers — salary, trips, admin portal",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "npx nodemon src/index.js",
+    "import": "node src/import-excel.js",
+    "sync": "node -e \"require('./src/google-sheets-sync').syncFromGoogleSheets(process.env.GOOGLE_SPREADSHEET_ID || require('./src/config').google.spreadsheetId, process.env.GOOGLE_SERVICE_ACCOUNT || './data/gservice-account.json')\"",
+    "setup-menu": "node src/setup-richmenu.js"
+  },
+  "keywords": ["line-bot", "driver-portal", "npc"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@line/bot-sdk": "^9.6.0",
+    "better-sqlite3": "^11.7.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "googleapis": "^144.0.0",
+    "multer": "^1.4.5-lts.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
