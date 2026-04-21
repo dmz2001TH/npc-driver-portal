@@ -9,25 +9,30 @@
   <rect width="2500" height="843" fill="url(#bg)" rx="20"/>
 
   <!-- Title -->
-  <text x="1250" y="70" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="bold" font-family="sans-serif">🚛 NPC Driver Portal</text>
+  <text x="1250" y="60" text-anchor="middle" fill="#ffffff" font-size="42" font-weight="bold" font-family="sans-serif">🚛 NPC Driver Portal</text>
 
   <!-- Grid lines -->
-  <line x1="1250" y1="80" x2="1250" y2="843" stroke="#ffffff22" stroke-width="2"/>
-  <line x1="0" y1="460" x2="2500" y2="460" stroke="#ffffff22" stroke-width="2"/>
+  <line x1="833" y1="70" x2="833" y2="843" stroke="#ffffff22" stroke-width="2"/>
+  <line x1="1667" y1="70" x2="1667" y2="843" stroke="#ffffff22" stroke-width="2"/>
+  <line x1="0" y1="456" x2="2500" y2="456" stroke="#ffffff22" stroke-width="2"/>
 
-  <!-- Button 1: Salary -->
-  <text x="625" y="260" text-anchor="middle" fill="#1DB446" font-size="80">💰</text>
-  <text x="625" y="350" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="bold" font-family="sans-serif">เช็คเงินเดือน</text>
+  <!-- Row 1 -->
+  <text x="416" y="250" text-anchor="middle" fill="#1DB446" font-size="64">💰</text>
+  <text x="416" y="340" text-anchor="middle" fill="#ffffff" font-size="40" font-weight="bold" font-family="sans-serif">เช็คเงินเดือน</text>
 
-  <!-- Button 2: Trips -->
-  <text x="1875" y="260" text-anchor="middle" fill="#FF6B35" font-size="80">🚛</text>
-  <text x="1875" y="350" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="bold" font-family="sans-serif">การวิ่งงาน</text>
+  <text x="1250" y="250" text-anchor="middle" fill="#FF6B35" font-size="64">🚛</text>
+  <text x="1250" y="340" text-anchor="middle" fill="#ffffff" font-size="40" font-weight="bold" font-family="sans-serif">การวิ่งงาน</text>
 
-  <!-- Button 3: Link -->
-  <text x="625" y="640" text-anchor="middle" fill="#4ECDC4" font-size="80">🔗</text>
-  <text x="625" y="730" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="bold" font-family="sans-serif">จับคู่บัญชี</text>
+  <text x="2083" y="250" text-anchor="middle" fill="#4ECDC4" font-size="64">🔗</text>
+  <text x="2083" y="340" text-anchor="middle" fill="#ffffff" font-size="40" font-weight="bold" font-family="sans-serif">จับคู่บัญชี</text>
 
-  <!-- Button 4: Admin -->
-  <text x="1875" y="640" text-anchor="middle" fill="#FFD93D" font-size="80">📞</text>
-  <text x="1875" y="730" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="bold" font-family="sans-serif">ติดต่อแอดมิน</text>
+  <!-- Row 2 -->
+  <text x="416" y="630" text-anchor="middle" fill="#FFD93D" font-size="64">📞</text>
+  <text x="416" y="720" text-anchor="middle" fill="#ffffff" font-size="40" font-weight="bold" font-family="sans-serif">ติดต่อแอดมิน</text>
+
+  <text x="1250" y="630" text-anchor="middle" fill="#E84393" font-size="64">👋</text>
+  <text x="1250" y="720" text-anchor="middle" fill="#ffffff" font-size="40" font-weight="bold" font-family="sans-serif">สวัสดี/ทักทาย</text>
+
+  <text x="2083" y="630" text-anchor="middle" fill="#6C5CE7" font-size="64">📘</text>
+  <text x="2083" y="720" text-anchor="middle" fill="#ffffff" font-size="40" font-weight="bold" font-family="sans-serif">วิธีใช้งาน</text>
 </svg>

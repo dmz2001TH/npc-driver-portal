@@ -148,6 +148,61 @@ function formatTripsFlex(trips, driverName) {
   };
 }
 
+function formatGreetingMessage(mapping) {
+  if (!mapping) {
+    return {
+      type: 'text',
+      text: 'สวัสดีครับ! 👋\n\nยินดีต้อนรับสู่ NPC Driver Portal 🚛\n\nกรุณากด "🔗 จับคู่บัญชี" เพื่อเชื่อม LINE กับรหัสพนักงานก่อนนะครับ',
+    };
+  }
+
+  const driver = db.getDriver(mapping.npc_id);
+  const trips = db.getTripsByDriver(mapping.npc_id);
+  const salary = db.getSalaryByDriver(mapping.npc_id);
+
+  const totalTrips = trips.length;
+  const totalRevenue = trips.reduce((sum, t) => sum + (t.price || 0), 0);
+
+  return {
+    type: 'flex',
+    altText: `👋 สวัสดี ${driver?.name || mapping.npc_id}`,
+    contents: {
+      type: 'bubble',
+      body: {
+        type: 'box', layout: 'vertical', paddingAll: 'lg',
+        contents: [
+          { type: 'text', text: '👋 สวัสดีครับ!', weight: 'bold', size: 'xl' },
+          { type: 'separator', margin: 'md' },
+          { type: 'text', text: driver?.name || mapping.npc_id, size: 'lg', color: '#1DB446', margin: 'md' },
+          { type: 'text', text: `รหัส: ${mapping.npc_id}`, size: 'sm', color: '#888888' },
+          { type: 'separator', margin: 'md' },
+          {
+            type: 'box', layout: 'horizontal', margin: 'md',
+            contents: [
+              {
+                type: 'box', layout: 'vertical', flex: 1, alignItems: 'center',
+                contents: [
+                  { type: 'text', text: `${totalTrips}`, size: 'xl', weight: 'bold', color: '#FF6B35' },
+                  { type: 'text', text: 'เที่ยว', size: 'xs', color: '#888888' },
+                ],
+              },
+              {
+                type: 'box', layout: 'vertical', flex: 1, alignItems: 'center',
+                contents: [
+                  { type: 'text', text: `${totalRevenue.toLocaleString()}`, size: 'xl', weight: 'bold', color: '#1DB446' },
+                  { type: 'text', text: '฿ รายได้', size: 'xs', color: '#888888' },
+                ],
+              },
+            ],
+          },
+          { type: 'separator', margin: 'md' },
+          { type: 'text', text: 'กดปุ่มด้านล่างเพื่อเช็คข้อมูลได้เลยครับ 👇', size: 'sm', color: '#666666', margin: 'md', wrap: true },
+        ],
+      },
+    },
+  };
+}
+
 function formatHelpMessage() {
   return {
     type: 'flex',
@@ -172,6 +227,17 @@ function formatHelpMessage() {
 }
 
 async function handleEvent(event) {
+  // Handle follow (new friend)
+  if (event.type === 'follow') {
+    const lineUserId = event.source.userId;
+    return sendWelcomeMessage(lineUserId);
+  }
+
+  // Handle unfollow
+  if (event.type === 'unfollow') {
+    return; // Clean up if needed
+  }
+
   if (event.type !== 'message' && event.type !== 'postback') return;
   if (event.source.type !== 'user') return; // Only DM
 
@@ -192,8 +258,21 @@ async function handleEvent(event) {
 
   // Handle text messages
   if (event.message.type === 'text') {
-    const text = event.message.text.trim();
-    return handleTextMessage(event.replyToken, lineUserId, text, mapping);
+    const text = event.message.text.trim().toLowerCase();
+
+    // Greeting keywords
+    const greetings = ['สวัสดี', 'hello', 'hi', 'หวัดดี', 'ดีครับ', 'ดีค่ะ', 'ดีจ้า', 'โย่ว', 'yo'];
+    if (greetings.some(g => text.includes(g))) {
+      const mapping = db.getMappingByLineId(lineUserId);
+      return replyWithFlex(replyToken, formatGreetingMessage(mapping));
+    }
+
+    // Help keywords
+    if (['help', 'ช่วย', 'วิธี', 'สอน', 'how'].some(k => text.includes(k))) {
+      return replyWithFlex(replyToken, formatHelpMessage());
+    }
+
+    return handleTextMessage(event.replyToken, lineUserId, event.message.text.trim(), mapping);
   }
 }
 
@@ -209,6 +288,8 @@ async function handlePostback(replyToken, lineUserId, action, mapping) {
       return replyAdminContact(replyToken, lineUserId, mapping);
     case 'action=help':
       return replyWithFlex(replyToken, formatHelpMessage());
+    case 'action=greeting':
+      return replyWithFlex(replyToken, formatGreetingMessage(mapping));
     default:
       return replyText(replyToken, 'ไม่เข้าใจคำสั่งครับ ลองกดเมนูด้านล่าง 📋');
   }
@@ -340,6 +421,49 @@ async function forwardToAdmin(lineUserId, text, mapping) {
   });
 }
 
+async function sendWelcomeMessage(lineUserId) {
+  const mapping = db.getMappingByLineId(lineUserId);
+  const client = getClient();
+
+  const welcomeFlex = {
+    type: 'flex',
+    altText: '🚛 ยินดีต้อนรับสู่ NPC Driver Portal!',
+    contents: {
+      type: 'bubble',
+      hero: {
+        type: 'box', layout: 'vertical', paddingAll: 'lg', backgroundColor: '#1a1a2e',
+        contents: [
+          { type: 'text', text: '🚛', size: '6xl', align: 'center' },
+          { type: 'text', text: 'NPC Driver Portal', size: 'xl', weight: 'bold', align: 'center', color: '#ffffff', margin: 'md' },
+        ],
+      },
+      body: {
+        type: 'box', layout: 'vertical', paddingAll: 'lg',
+        contents: [
+          { type: 'text', text: 'ยินดีต้อนรับครับ! 👋', weight: 'bold', size: 'xl' },
+          { type: 'separator', margin: 'md' },
+          { type: 'text', text: 'ระบบสำหรับเช็คข้อมูลการทำงานของคนขับรถ NPC', size: 'sm', color: '#666666', margin: 'md', wrap: true },
+          { type: 'separator', margin: 'md' },
+          { type: 'text', text: '📋 สิ่งที่ทำได้:', weight: 'bold', size: 'md', margin: 'md' },
+          { type: 'text', text: '💰 เช็คเงินเดือน — สรุปรายได้ แยกตามราคา', size: 'sm', margin: 'sm', wrap: true },
+          { type: 'text', text: '🚛 เช็คการวิ่งงาน — รายการเที่ยวทั้งหมด', size: 'sm', margin: 'sm', wrap: true },
+          { type: 'text', text: '📞 ติดต่อแอดมิน — ส่งข้อความหาแอดมิน', size: 'sm', margin: 'sm', wrap: true },
+          { type: 'separator', margin: 'md' },
+          { type: 'text', text: mapping
+            ? `✅ คุณจับคู่เป็น ${db.getDriver(mapping.npc_id)?.name || mapping.npc_id} แล้ว\nกดปุ่มด้านล่างเพื่อเช็คข้อมูลได้เลย!`
+            : '⚠️ กด "🔗 จับคู่บัญชี" เพื่อเชื่อม LINE กับรหัสพนักงานก่อนนะครับ',
+            size: 'sm', color: mapping ? '#1DB446' : '#FF6B35', margin: 'md', wrap: true },
+        ],
+      },
+    },
+  };
+
+  await client.pushMessage({
+    to: lineUserId,
+    messages: [welcomeFlex],
+  });
+}
+
 async function replyText(replyToken, text) {
   const client = getClient();
   await client.replyMessage({
@@ -361,5 +485,7 @@ module.exports = {
   formatSalaryFlex,
   formatTripsFlex,
   formatHelpMessage,
+  formatGreetingMessage,
+  sendWelcomeMessage,
   getClient,
 };
