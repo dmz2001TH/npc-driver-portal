@@ -1,5 +1,5 @@
 const line = require('@line/bot-sdk');
-const config = require('../config');
+const config = require('./config');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
